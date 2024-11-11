@@ -54,6 +54,8 @@ markupsafe==3.0.2
     # via jinja2
 mdurl==0.1.2
     # via markdown-it-py
+pyarrow==18.0.0
+    # via -r requirements/requirements.in
 pydantic==2.9.2
     # via fastapi
 pydantic-core==2.23.4

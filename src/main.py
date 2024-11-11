@@ -1,10 +1,18 @@
 import os
+from typing import List
 
-from fastapi import FastAPI
+import db
 
-from schema import HealthCheckResponse
+from fastapi import FastAPI, Depends
+
+from schema import HealthCheckResponse, IssuesParams, Issue
 
 app = FastAPI()
+
+
+@app.get("/log/issue")
+def issues(params: IssuesParams = Depends()):
+    return db.search_issues(params)
 
 
 @app.get("/health", response_model=HealthCheckResponse)

@@ -15,6 +15,10 @@ services:
       - "${LOCALSTACK_VOLUME_DIR:-./localstack/volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "./localstack/bootstrap:/etc/localstack/init/ready.d/"
+    networks:
+      ls:
+        # Set the container IP address in the 10.0.2.0/24 subnet
+        ipv4_address: 10.0.2.20
 
   pipeline-api:
     build:
@@ -23,20 +27,26 @@ services:
       args:
         GIT_COMMIT: placeholder
     environment:
-      PYTHONUNBUFFERED: 1
-      AWS_ENDPOINT_URL: http://localstack:4566
-      CELERY_BROKER_URL: sqs://ABCDEFGHIJKLMNOPQRST:ZYXK7NiynGlTogH8Nj+P9nlE73sq3@localstack:4566
+      COLLECTION_BUCKET: local-collection-data
       AWS_DEFAULT_REGION: eu-west-2
-      AWS_ACCESS_KEY_ID: example
-      AWS_SECRET_ACCESS_KEY: example
-      SQS_QUEUE_NAME: request-queue
-      DATABASE_URL: postgresql://postgres:password@request-db/request_database
-      SENTRY_ENABLED: "false"
-      SENTRY_DSN: https://secret.sentry.url/here
-      SENTRY_ENVIRONMENT: docker-compose-local
-      SENTRY_TRACING_ENABLED: "true"
-      SENTRY_TRACING_SAMPLE_RATE: "0.50"
-      SENTRY_DEBUG: "true"
+      AWS_ENDPOINT_URL: http://localstack:4566
+      DUCKDB_S3_ENDPOINT: s3.localhost.localstack.cloud:4566
+      DUCKDB_S3_USE_SSL: false
+      AWS_REGION: eu-west-2
     restart: on-failure
     ports:
       - "8000:8000"
+    dns:
+      # Set the DNS server to be the LocalStack container
+      - 10.0.2.20
+    networks:
+      - ls
+
+networks:
+  # localstack network is used so that requests to localstack resolve from containers
+  # See https://docs.localstack.cloud/references/network-troubleshooting/endpoint-url/
+  ls:
+    ipam:
+      config:
+        # Specify the subnet range for IP address allocation
+        - subnet: 10.0.2.0/24

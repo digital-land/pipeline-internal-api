@@ -11,7 +11,7 @@ from schema import HealthCheckResponse, IssuesParams
 app = FastAPI()
 
 
-@app.get("/log/issue")
+@app.get("/log/issue", tags=["Issue"])
 def issues(http_response: Response, params: IssuesParams = Depends()):
     paginated_result = db.search_issues(params)
     http_response.headers["X-Pagination-Total-Results"] = str(
@@ -22,7 +22,7 @@ def issues(http_response: Response, params: IssuesParams = Depends()):
     return paginated_result.data
 
 
-@app.get("/health", response_model=HealthCheckResponse)
+@app.get("/health", response_model=HealthCheckResponse, tags=["Health"])
 def healthcheck():
     return HealthCheckResponse(
         name="pipeline-api",

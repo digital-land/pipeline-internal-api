@@ -30,14 +30,20 @@ def search_issues(params: IssuesParams):
     logger.debug(sql_results)
 
     with duckdb.connect() as conn:
-        count = conn.execute(sql_count).fetchone()[0]  # Count is first item in Tuple
-        logger.debug(count)
-        results = conn.execute(sql_results).arrow().to_pylist()
-        return PaginatedResult(
-            params=PaginationParams(offset=params.offset, limit=params.limit),
-            total_results_available=count,
-            data=results
-        )
+        try:
+            count = conn.execute(sql_count).fetchone()[0]  # Count is first item in Tuple
+            logger.debug(count)
+            results = conn.execute(sql_results).arrow().to_pylist()
+            return PaginatedResult(
+                params=PaginationParams(offset=params.offset, limit=params.limit),
+                total_results_available=count,
+                data=results
+            )
+        except Exception as e:
+            logger.exception(
+                "Failure executing DuckDB queries",
+            )
+            raise e
 
 
 def _add_condition(where_clause, condition):

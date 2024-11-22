@@ -13,7 +13,7 @@ logger = get_logger(__name__)
 with duckdb.connect() as conn:
     logger.info("Creating S3 secret using credential chain")
     logger.info(conn.execute("CREATE SECRET aws (TYPE S3, PROVIDER CREDENTIAL_CHAIN);").fetchall())
-    logger.info(conn.execute("SELECT * FROM duckdb_secrets();").fetchall()
+    logger.info(conn.execute("SELECT * FROM duckdb_secrets();").fetchall())
 
 
 def search_issues(params: IssuesParams):

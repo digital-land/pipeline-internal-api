@@ -2,9 +2,6 @@ import os
 import logging
 import sys
 
-# Temporary to help debug httpx S3 connection issue in AWS
-logging.getLogger("httpx").setLevel("DEBUG")
-
 
 def get_logger(logger_name):
     logger = logging.getLogger(logger_name)

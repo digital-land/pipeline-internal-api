@@ -9,11 +9,6 @@ issues_base_path = os.environ.get("ISSUES_BASE_PATH", 'log/issue')
 
 logger = get_logger(__name__)
 
-# Initialisation
-with duckdb.connect() as conn:
-    logger.info("Creating S3 secret using credential chain")
-    logger.info(conn.execute("CREATE SECRET aws (TYPE S3, PROVIDER CREDENTIAL_CHAIN);").fetchall())
-
 
 def search_issues(params: IssuesParams):
     s3_uri = f"s3://{collection_bucket}/{issues_base_path}/**/*.parquet"
@@ -36,7 +31,8 @@ def search_issues(params: IssuesParams):
 
     with duckdb.connect() as conn:
         try:
-            logger.info(conn.execute("SELECT * FROM duckdb_secrets();").fetchall())
+            logger.info(conn.execute("CREATE SECRET aws (TYPE S3, PROVIDER CREDENTIAL_CHAIN);").fetchall())
+            logger.info(conn.execute("FROM duckdb_secrets();").fetchall())
             count = conn.execute(sql_count).fetchone()[0]  # Count is first item in Tuple
             logger.debug(count)
             results = conn.execute(sql_results).arrow().to_pylist()

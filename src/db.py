@@ -31,6 +31,7 @@ def search_issues(params: IssuesParams):
 
     with duckdb.connect() as conn:
         try:
+            logger.info(conn.execute("FROM duckdb_secrets();").fetchall())
             count = conn.execute(sql_count).fetchone()[0]  # Count is first item in Tuple
             logger.debug(count)
             results = conn.execute(sql_results).arrow().to_pylist()

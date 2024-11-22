@@ -13,7 +13,6 @@ logger = get_logger(__name__)
 with duckdb.connect() as conn:
     logger.info("Creating S3 secret using credential chain")
     logger.info(conn.execute("CREATE SECRET aws (TYPE S3, PROVIDER CREDENTIAL_CHAIN);").fetchall())
-    logger.info(conn.execute("SELECT * FROM duckdb_secrets();").fetchall())
 
 
 def search_issues(params: IssuesParams):
@@ -37,6 +36,7 @@ def search_issues(params: IssuesParams):
 
     with duckdb.connect() as conn:
         try:
+            logger.info(conn.execute("SELECT * FROM duckdb_secrets();").fetchall())
             count = conn.execute(sql_count).fetchone()[0]  # Count is first item in Tuple
             logger.debug(count)
             results = conn.execute(sql_results).arrow().to_pylist()

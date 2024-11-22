@@ -34,6 +34,12 @@ services:
       DUCKDB_S3_USE_SSL: false
       AWS_REGION: eu-west-2
       LOGGING_LEVEL: DEBUG
+      USE_AWS_CREDENTIAL_CHAIN: false
+
+#      AWS_ACCESS_KEY_ID: "***"
+#      AWS_SECRET_ACCESS_KEY: "***"
+#      AWS_SESSION_TOKEN: "***"
+#      AWS_CREDENTIAL_EXPIRATION: 2024-11-12T10:51:26Z
     restart: on-failure
     ports:
       - "8000:8000"

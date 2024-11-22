@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 class IssuesParams(BaseModel):
     offset: int = Field(0, ge=0)
     limit: int = Field(50, ge=1, le=100)
-    dataset: Optional[str] = Field(None)
+    dataset: str
     resource: Optional[str] = Field(None)
     field: Optional[str] = Field(None)
     issue_type: Optional[str] = Field(None)

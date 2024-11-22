@@ -6,6 +6,7 @@ from pagination_model import PaginationParams, PaginatedResult
 
 collection_bucket = os.environ.get("COLLECTION_BUCKET", "local-collection-data")
 issues_base_path = os.environ.get("ISSUES_BASE_PATH", 'log/issue')
+use_aws_credential_chain = os.environ.get("USE_AWS_CREDENTIAL_CHAIN", 'true').lower() == "true"
 
 logger = get_logger(__name__)
 
@@ -31,8 +32,9 @@ def search_issues(params: IssuesParams):
 
     with duckdb.connect() as conn:
         try:
-            logger.info(conn.execute("CREATE SECRET aws (TYPE S3, PROVIDER CREDENTIAL_CHAIN);").fetchall())
-            logger.info(conn.execute("FROM duckdb_secrets();").fetchall())
+            if use_aws_credential_chain:
+                logger.debug(conn.execute("CREATE SECRET aws (TYPE S3, PROVIDER CREDENTIAL_CHAIN);").fetchall())
+                logger.debug(conn.execute("FROM duckdb_secrets();").fetchall())
             count = conn.execute(sql_count).fetchone()[0]  # Count is first item in Tuple
             logger.debug(count)
             results = conn.execute(sql_results).arrow().to_pylist()

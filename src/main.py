@@ -1,6 +1,5 @@
-import os
-
 from fastapi import Response
+from fastapi.openapi.models import Contact
 
 import db
 
@@ -8,7 +7,9 @@ from fastapi import FastAPI, Depends
 
 from schema import HealthCheckResponse, IssuesParams
 
-app = FastAPI()
+from doc import app
+
+app = FastAPI(title=app.title, summary=app.summary, version=app.version, contact=Contact(email=app.contact))
 
 
 @app.get("/log/issue", tags=["Issue"])
@@ -26,5 +27,5 @@ def issues(http_response: Response, params: IssuesParams = Depends()):
 def healthcheck():
     return HealthCheckResponse(
         name="pipeline-api",
-        version=os.environ.get("GIT_COMMIT", "unknown")
+        version=app.version
     )

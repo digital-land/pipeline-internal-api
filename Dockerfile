@@ -1,6 +1,6 @@
 FROM python:3.9.19-slim-bookworm
 
-ARG GIT_COMMIT
+ARG GIT_COMMIT=placeholder
 ENV GIT_COMMIT=$GIT_COMMIT
 
 # RUN apk add --no-cache libcurl curl-dev build-base

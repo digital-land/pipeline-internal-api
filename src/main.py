@@ -7,9 +7,14 @@ from fastapi import FastAPI, Depends
 
 from schema import HealthCheckResponse, IssuesParams
 
-from doc import app
+from doc import app_info
 
-app = FastAPI(title=app.title, summary=app.summary, version=app.version, contact=Contact(email=app.contact))
+app = FastAPI(
+    title=app_info.title,
+    summary=app_info.summary,
+    version=app_info.version,
+    contact=Contact(email=app_info.contact)
+)
 
 
 @app.get("/log/issue", tags=["Issue"])

@@ -16,7 +16,7 @@ class App(BaseModel):
     license: License
 
 
-app = App(
+app_info = App(
     title="Pipeline API - Internal",
     summary="""Provides access to the metadata consumed and produced by the data collection pipelines. 
                  These pipelines are responsible for ETL (extract, transform and load) from providers,  

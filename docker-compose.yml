@@ -31,10 +31,10 @@ services:
       AWS_DEFAULT_REGION: eu-west-2
       AWS_ENDPOINT_URL: http://localstack:4566
       DUCKDB_S3_ENDPOINT: s3.localhost.localstack.cloud:4566
-      DUCKDB_S3_USE_SSL: false
+      DUCKDB_S3_USE_SSL: "false"
       AWS_REGION: eu-west-2
       LOGGING_LEVEL: DEBUG
-      USE_AWS_CREDENTIAL_CHAIN: false
+      USE_AWS_CREDENTIAL_CHAIN: "false"
 
 #      AWS_ACCESS_KEY_ID: "***"
 #      AWS_SECRET_ACCESS_KEY: "***"
@@ -48,7 +48,24 @@ services:
       - 10.0.2.20
     networks:
       - ls
-
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      TEST_ENV: "true"
+      AWS_ACCESS_KEY_ID: testing
+      AWS_SECRET_ACCESS_KEY: testing
+      AWS_DEFAULT_REGION: us-west-2
+      AWS_ENDPOINT_URL: http://localstack:4566
+      COLLECTION_BUCKET: test-bucket
+      LOGGING_LEVEL: DEBUG
+      USE_AWS_CREDENTIAL_CHAIN: "false"
+    command: ["pytest", "tests/"]
+    depends_on:
+      - localstack
+    networks:
+      - ls
 networks:
   # localstack network is used so that requests to localstack resolve from containers
   # See https://docs.localstack.cloud/references/network-troubleshooting/endpoint-url/

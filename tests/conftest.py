@@ -47,8 +47,14 @@ def duckdb_connection(localstack_container):
     yield conn
     conn.close()
 
+
 @pytest.fixture(scope="module")
-def s3_bucket(s3_client):
+def test_dir(request):
+    return os.path.dirname(request.module.__file__)
+
+
+@pytest.fixture(scope="module")
+def s3_bucket(s3_client, test_dir):
     # Create a bucket in LocalStack for the test
     bucket_name = os.environ["COLLECTION_BUCKET"]
     try:
@@ -57,7 +63,7 @@ def s3_bucket(s3_client):
         pass  # Ignore if bucket already exists
 
     # Upload a Parquet file to the bucket
-    parquet_file = "tests/files/issues.parquet"  
+    parquet_file = f"{test_dir}/../files/issues.parquet"
     with open(parquet_file, "rb") as f:
         s3_client.put_object(Bucket=bucket_name, Key="test/path/issues.parquet", Body=f)
     

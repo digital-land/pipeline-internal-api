@@ -14,9 +14,11 @@ anyio==4.6.2.post1
     #   httpx
     #   starlette
     #   watchfiles
-boto3==1.35.73
-    # via moto
-botocore==1.35.73
+boto3==1.35.74
+    # via
+    #   moto
+    #   testcontainers
+botocore==1.35.74
     # via
     #   boto3
     #   moto
@@ -42,6 +44,8 @@ dnspython==2.7.0
     # via
     #   -r /home/ssadhu/pipeline-internal-api/requirements/requirements.txt
     #   email-validator
+docker==7.1.0
+    # via testcontainers
 duckdb==1.1.3
     # via -r /home/ssadhu/pipeline-internal-api/requirements/requirements.txt
 email-validator==2.2.0
@@ -153,6 +157,7 @@ pyyaml==6.0.2
     #   uvicorn
 requests==2.32.3
     # via
+    #   docker
     #   moto
     #   responses
 responses==0.25.3
@@ -178,6 +183,8 @@ starlette==0.41.2
     # via
     #   -r /home/ssadhu/pipeline-internal-api/requirements/requirements.txt
     #   fastapi
+testcontainers[localstack]==4.8.2
+    # via -r requirements/test_requirements.in
 tomli==2.2.1
     # via pytest
 typer==0.13.0
@@ -192,13 +199,16 @@ typing-extensions==4.12.2
     #   pydantic
     #   pydantic-core
     #   rich
+    #   testcontainers
     #   typer
     #   uvicorn
-urllib3==1.26.18
+urllib3==2.2.3
     # via
     #   botocore
+    #   docker
     #   requests
     #   responses
+    #   testcontainers
 uvicorn[standard]==0.32.0
     # via
     #   -r /home/ssadhu/pipeline-internal-api/requirements/requirements.txt
@@ -218,5 +228,7 @@ websockets==13.1
     #   uvicorn
 werkzeug==3.1.3
     # via moto
+wrapt==1.17.0
+    # via testcontainers
 xmltodict==0.14.2
     # via moto

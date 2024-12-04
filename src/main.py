@@ -39,7 +39,6 @@ async def validation_exception_handler(request: Request, exc: ValidationError):
 
 @app.get("/log/issue", tags=["Issue"])
 def issues(http_response: Response, params: IssuesParams = Depends()):
-    logger.debug("params: ",params.dataset)
     
     paginated_result = db.search_issues(params)
     http_response.headers["X-Pagination-Total-Results"] = str(

@@ -3,3 +3,6 @@ pytest
 moto[s3]
 testcontainers[localstack]
 urllib3==1.26.18
+black==23.3.0
+flake8==6.0.0
+pytest-cov>=5.0.0

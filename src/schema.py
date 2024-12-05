@@ -7,16 +7,17 @@ from pydantic import BaseModel, Field, validator
 class IssuesParams(BaseModel):
     offset: int = Field(0, ge=0)
     limit: int = Field(50, ge=1, le=100)
-    dataset:  Optional[str] = Field(None)
+    dataset: Optional[str] = Field(None)
     resource: Optional[str] = Field(None)
     field: Optional[str] = Field(None)
     issue_type: Optional[str] = Field(None)
 
-    @validator('dataset')
+    @validator("dataset")
     def check_dataset_required(cls, value):
         if value is None:
             raise ValueError("The 'dataset' query parameter is required.")
         return value
+
 
 def snake_to_slug(snake: str) -> str:
     return snake.lower().replace("_", "-")

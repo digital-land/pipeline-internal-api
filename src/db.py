@@ -1,4 +1,3 @@
-import os
 import duckdb
 from log import get_logger
 from schema import IssuesParams
@@ -11,7 +10,6 @@ logger = get_logger(__name__)
 
 def search_issues(params: IssuesParams):
     s3_uri = f"s3://{config.collection_bucket}/{config.issues_base_path}/**/*.parquet"
-    
     pagination = f"LIMIT {params.limit} OFFSET {params.offset}"
 
     where_clause = ""
@@ -22,7 +20,9 @@ def search_issues(params: IssuesParams):
     if params.field:
         where_clause += _add_condition(where_clause, f"field = '{params.field}'")
     if params.issue_type:
-        where_clause += _add_condition(where_clause, f"\"issue-type\" = '{params.issue_type}'")
+        where_clause += _add_condition(
+            where_clause, f"\"issue-type\" = '{params.issue_type}'"
+        )
 
     sql_count = f"SELECT COUNT(*) FROM '{s3_uri}' {where_clause}"
     logger.debug(sql_count)
@@ -32,15 +32,20 @@ def search_issues(params: IssuesParams):
     with duckdb.connect() as conn:
         try:
             if config.use_aws_credential_chain:
-                logger.debug(conn.execute("CREATE SECRET aws (TYPE S3, PROVIDER CREDENTIAL_CHAIN);").fetchall())
+                logger.debug(
+                    conn.execute(
+                        "CREATE SECRET aws (TYPE S3, PROVIDER CREDENTIAL_CHAIN);"
+                    ).fetchall()
+                )
                 logger.debug(conn.execute("FROM duckdb_secrets();").fetchall())
-            count = conn.execute(sql_count).fetchone()[0]  # Count is first item in Tuple
-            logger.debug(count)
+            count = conn.execute(sql_count).fetchone()[
+                0
+            ]  # Count is first item in Tuple
             results = conn.execute(sql_results).arrow().to_pylist()
             return PaginatedResult(
                 params=PaginationParams(offset=params.offset, limit=params.limit),
                 total_results_available=count,
-                data=results
+                data=results,
             )
         except Exception as e:
             logger.exception(
@@ -55,5 +60,3 @@ def _add_condition(where_clause, condition):
     else:
         conjunction = "AND"
     return f"{conjunction} {condition} "
-
-

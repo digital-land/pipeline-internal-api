@@ -21,4 +21,4 @@ COPY docker-entrypoint.sh docker-entrypoint.sh
 
 # COPY request-api/makefile makefile
 
-CMD ["pytest"]
+ENTRYPOINT ["./docker-entrypoint.sh"]

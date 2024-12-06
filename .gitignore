@@ -1,3 +1,6 @@
+__pycache__/
 .DS_Store
 .idea
+.venv
 localstack/volume
+.coverage

@@ -21,7 +21,7 @@ click==8.1.7
     #   uvicorn
 dnspython==2.7.0
     # via email-validator
-duckdb==1.1.3
+duckdb==1.1.2
     # via -r requirements/requirements.in
 email-validator==2.2.0
     # via fastapi

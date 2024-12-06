@@ -16,11 +16,12 @@ anyio==4.6.2.post1
     #   watchfiles
 black==23.3.0
     # via -r requirements/test_requirements.in
-boto3==1.35.76
+boto3==1.34.113
     # via
+    #   -r requirements/test_requirements.in
     #   moto
     #   testcontainers
-botocore==1.35.76
+botocore==1.34.162
     # via
     #   boto3
     #   moto

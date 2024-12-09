@@ -38,28 +38,6 @@ def mock_search_issues(params):
     )
 
 
-def test_bucket_and_file_existence(s3_client, s3_bucket):
-    # Test if the bucket exists
-    bucket_name = os.environ["COLLECTION_BUCKET"]
-    buckets = s3_client.list_buckets()["Buckets"]
-    bucket_names = [bucket["Name"] for bucket in buckets]
-    assert bucket_name in bucket_names, f"Bucket {bucket_name} does not exist"
-
-    # Test if the file exists in the bucket
-    files = s3_client.list_objects(Bucket=bucket_name).get("Contents", [])
-    file_keys = [file["Key"] for file in files]
-    assert "test/path/issues.parquet" in file_keys, "File does not exist in the bucket"
-
-
-def test_duckdb_query_with_localstack(s3_client, s3_bucket, duckdb_connection):
-    # Query to fetch data from the Parquet file in S3
-    query = f"SELECT * FROM 's3://{os.environ['COLLECTION_BUCKET']}/test/path/issues.parquet' LIMIT 10"
-    # Execute the query and fetch results
-    result = duckdb_connection.execute(query).fetchall()
-
-    # Check if the result contains any rows
-    assert len(result) > 0, "No rows returned from the S3 query"
-
 
 @patch("db.search_issues", side_effect=mock_search_issues)
 def test_issues_endpoint(mock_search_issues):

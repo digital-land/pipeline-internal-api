@@ -26,6 +26,6 @@ app_info = App(
     contact="digitalland@communities.gov.uk",
     license=License(
         name="Open Government Licence v3.0",
-        url="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
-    )
+        url="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+    ),
 )

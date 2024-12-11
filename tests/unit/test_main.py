@@ -2,7 +2,6 @@ from fastapi.testclient import TestClient
 from unittest.mock import patch
 from main import app
 from pagination_model import PaginationParams, PaginatedResult
-import os
 
 # Create a test client for the FastAPI app
 client = TestClient(app)
@@ -36,7 +35,6 @@ def mock_search_issues(params):
             },
         ],
     )
-
 
 
 @patch("db.search_issues", side_effect=mock_search_issues)

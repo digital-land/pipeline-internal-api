@@ -31,10 +31,10 @@ services:
       AWS_DEFAULT_REGION: eu-west-2
       AWS_ENDPOINT_URL: http://localstack:4566
       DUCKDB_S3_ENDPOINT: s3.localhost.localstack.cloud:4566
-      DUCKDB_S3_USE_SSL: false
+      DUCKDB_S3_USE_SSL: "false"
       AWS_REGION: eu-west-2
       LOGGING_LEVEL: DEBUG
-      USE_AWS_CREDENTIAL_CHAIN: false
+      USE_AWS_CREDENTIAL_CHAIN: "false"
 
 #      AWS_ACCESS_KEY_ID: "***"
 #      AWS_SECRET_ACCESS_KEY: "***"

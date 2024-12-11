@@ -1,5 +1,5 @@
+
 from fastapi.testclient import TestClient
-from unittest.mock import patch
 from main import app
 import json
 
@@ -8,7 +8,7 @@ import json
 client = TestClient(app)
 
 
-def test_search_issues(s3_bucket, duckdb_connection):
+def test_search_issues(s3_bucket):
     # Prepare test params
     params = {
         "dataset": "conservation-area",
@@ -17,8 +17,7 @@ def test_search_issues(s3_bucket, duckdb_connection):
     }
 
     # Test the function that interacts with DuckDB and S3 via LocalStack
-    with patch("db.duckdb.connect", return_value=duckdb_connection):
-        response = client.get("/log/issue", params=params)
+    response = client.get("/log/issue", params=params)
 
     # Validate the results from the search
     assert response.status_code == 200
@@ -35,13 +34,12 @@ def test_search_issues(s3_bucket, duckdb_connection):
     )
 
 
-def test_search_issues_no_parameters(duckdb_connection):
+def test_search_issues_no_parameters():
     # Prepare test params
     params = {}
 
     # Test the function that interacts with DuckDB and S3 via LocalStack
-    with patch("db.duckdb.connect", return_value=duckdb_connection):
-        response = client.get("/log/issue", params=params)
+    response = client.get("/log/issue", params=params)
 
     response_json = json.loads(response.content.decode("utf-8"))
     details = response_json.get("detail", [])

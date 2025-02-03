@@ -41,7 +41,7 @@ def duckdb_connection(localstack_container):
     conn = duckdb.connect()
     # Configure DuckDB to connect to S3 via LocalStack
     conn.execute(
-        f"SET s3_endpoint = '{localstack_container.get_url().lstrip('http://')}';"
+        f"SET s3_endpoint = '{localstack_container.get_url().lstrip('http://')}';" #noqa
     )
     conn.execute("SET s3_url_style = 'path';")
     yield conn

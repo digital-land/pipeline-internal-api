@@ -45,7 +45,7 @@ click==8.1.8
     #   uvicorn
 coverage[toml]==7.6.10
     # via pytest-cov
-cryptography==44.0.0
+cryptography==3.4.8
     # via
     #   -r requirements/test_requirements.in
     #   moto
@@ -124,7 +124,7 @@ mdurl==0.1.2
     # via
     #   -r /home/ssadhu/pipeline-internal-api/requirements/requirements.txt
     #   markdown-it-py
-moto[s3]==5.0.28
+moto[s3]==5.0.22
     # via -r requirements/test_requirements.in
 mypy-extensions==1.0.0
     # via black
@@ -138,7 +138,7 @@ platformdirs==4.3.6
     # via black
 pluggy==1.5.0
     # via pytest
-py-partiql-parser==0.6.1
+py-partiql-parser==0.5.6
     # via moto
 pyarrow==19.0.0
     # via -r /home/ssadhu/pipeline-internal-api/requirements/requirements.txt

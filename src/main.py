@@ -6,7 +6,7 @@ import json
 from fastapi import FastAPI, Depends, Request
 from pydantic import ValidationError
 from fastapi.responses import JSONResponse
-from schema import HealthCheckResponse, IssuesParams
+from schema import HealthCheckResponse, IssuesParams, ProvisionParams
 from log import get_logger
 
 from doc import app_info
@@ -51,6 +51,19 @@ def issues(http_response: Response, params: IssuesParams = Depends()):
         headers=http_response.headers,
     )
 
+@app.get("/provision/provision_summary", tags=["provision_summary"])
+def provision_summary(http_response: Response, params: ProvisionParams = Depends()):
+    paginated_result = db.search_provision_summary(params)
+    http_response.headers["X-Pagination-Total-Results"] = str(
+        paginated_result.total_results_available
+    )
+    http_response.headers["X-Pagination-Offset"] = str(paginated_result.params.offset)
+    http_response.headers["X-Pagination-Limit"] = str(paginated_result.params.limit)
+    return Response(
+        content=json.dumps(paginated_result.data),
+        media_type="application/json",
+        headers=http_response.headers,
+    )
 
 @app.get("/health", response_model=HealthCheckResponse, tags=["Health"])
 def healthcheck():

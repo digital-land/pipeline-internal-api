@@ -33,6 +33,12 @@ class Issue(BaseModel):
     value: str
     message: str
 
+class ProvisionParams(BaseModel):
+    offset: int = Field(0, ge=0)
+    limit: int = Field(50, ge=1, le=100)
+    dataset: Optional[str] = Field(None)
+    organisation: Optional[str] = Field(None)
+
 
 class HealthStatus(str, Enum):
     HEALTHY = "HEALTHY"

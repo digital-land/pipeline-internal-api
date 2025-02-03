@@ -8,7 +8,7 @@ from config import config
 logger = get_logger(__name__)
 
 
-def search_issues(params: IssuesParams): 
+def search_issues(params: IssuesParams):
     s3_uri = f"s3://{config.collection_bucket}/{config.issues_base_path}/**/*.parquet"
     pagination = f"LIMIT {params.limit} OFFSET {params.offset}"
 
@@ -54,7 +54,7 @@ def search_issues(params: IssuesParams):
             raise e
 
 
-def search_provision_summary(params: ProvisionParams): 
+def search_provision_summary(params: ProvisionParams):
     s3_uri = f"s3://{config.collection_bucket}/{config.performance_base_path}/*.parquet"
     pagination = f"LIMIT {params.limit} OFFSET {params.offset}"
 

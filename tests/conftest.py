@@ -20,7 +20,7 @@ def localstack_container():
         # Wait for the service to be ready
         os.environ[
             "DUCKDB_S3_ENDPOINT"
-        ] = f"s3.localhost.localstack.cloud:{localstack.get_exposed_port(4566)}"
+        ] = f"s3.localhost.localstack.cloud: {localstack.get_exposed_port(4566)}"
         yield localstack
 
 

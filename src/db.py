@@ -7,6 +7,7 @@ from config import config
 
 logger = get_logger(__name__)
 
+
 def search_issues(params: IssuesParams):
     s3_uri = f"s3://{config.collection_bucket}/{config.issues_base_path}/**/*.parquet"
     pagination = f"LIMIT {params.limit} OFFSET {params.offset}"
@@ -52,6 +53,7 @@ def search_issues(params: IssuesParams):
             )
             raise e
 
+
 def search_provision_summary(params: ProvisionParams):
     s3_uri = f"s3://{config.collection_bucket}/{config.performance_base_path}/*.parquet"
     pagination = f"LIMIT {params.limit} OFFSET {params.offset}"
@@ -60,8 +62,10 @@ def search_provision_summary(params: ProvisionParams):
     if params.dataset:
         where_clause += _add_condition(where_clause, f"dataset = '{params.dataset}'")
     if params.organisation:
-        where_clause += _add_condition(where_clause, f"organisation = '{params.organisation}'")
-   
+        where_clause += _add_condition(
+            where_clause, f"organisation = '{params.organisation}'"
+        )
+
     sql_count = f"SELECT COUNT(*) FROM '{s3_uri}' {where_clause}"
     logger.debug(sql_count)
     sql_results = f"SELECT * FROM '{s3_uri}' {where_clause} {pagination}"

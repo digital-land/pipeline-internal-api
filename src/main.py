@@ -51,6 +51,7 @@ def issues(http_response: Response, params: IssuesParams = Depends()):
         headers=http_response.headers,
     )
 
+
 @app.get("/provision/provision_summary", tags=["provision_summary"])
 def provision_summary(http_response: Response, params: ProvisionParams = Depends()):
     paginated_result = db.search_provision_summary(params)
@@ -64,6 +65,7 @@ def provision_summary(http_response: Response, params: ProvisionParams = Depends
         media_type="application/json",
         headers=http_response.headers,
     )
+
 
 @app.get("/health", response_model=HealthCheckResponse, tags=["Health"])
 def healthcheck():

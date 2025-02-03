@@ -1,8 +1,10 @@
 import os
 import pytest
+import duckdb
 import boto3
 from testcontainers.localstack import LocalStackContainer
 from botocore.exceptions import ClientError
+
 
 os.environ["AWS_ACCESS_KEY_ID"] = "test"
 os.environ["AWS_SECRET_ACCESS_KEY"] = "test"
@@ -10,7 +12,6 @@ os.environ["AWS_DEFAULT_REGION"] = "eu-west-2"
 os.environ["COLLECTION_BUCKET"] = "test-bucket"
 os.environ["ISSUES_BASE_PATH"] = "test/path"
 os.environ["USE_AWS_CREDENTIAL_CHAIN"] = "false"
-os.environ["DUCKDB_S3_USE_SSL"] = "false"
 
 
 @pytest.fixture(scope="module")
@@ -18,9 +19,6 @@ def localstack_container():
     # Start LocalStack container
     with LocalStackContainer() as localstack:
         # Wait for the service to be ready
-        os.environ[
-            "DUCKDB_S3_ENDPOINT"
-        ] = f"s3.localhost.localstack.cloud: {localstack.get_exposed_port(4566)}"
         yield localstack
 
 
@@ -35,6 +33,19 @@ def s3_client(localstack_container):
         aws_secret_access_key=os.environ["AWS_SECRET_ACCESS_KEY"],
     )
     return s3
+
+
+@pytest.fixture(scope="module")
+def duckdb_connection(localstack_container):
+    # Set up a DuckDB in-memory database
+    conn = duckdb.connect()
+    # Configure DuckDB to connect to S3 via LocalStack
+    conn.execute(
+        f"SET s3_endpoint = '{localstack_container.get_url().lstrip('http://')}';"
+    )
+    conn.execute("SET s3_url_style = 'path';")
+    yield conn
+    conn.close()
 
 
 @pytest.fixture(scope="module")

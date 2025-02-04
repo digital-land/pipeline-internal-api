@@ -50,3 +50,48 @@ def test_search_issues_no_parameters(duckdb_connection):
     assert any(
         "The 'dataset' query parameter is required" in detail for detail in details
     )
+
+
+def test_provision_summary(s3_bucket, duckdb_connection):
+    # Prepare test params
+    params = {
+        "organisation": "local-authority:BDG",
+        "offset": 0,
+        "limit": 8,
+    }
+
+    with patch("db.duckdb.connect", return_value=duckdb_connection):
+        # Test the function that interacts with DuckDB and S3 via LocalStack
+        response = client.get("/performance/provision_summary", params=params)
+
+    # Validate the results from the search
+    assert response.status_code == 200
+
+    response_data = response.json()
+    assert "X-Pagination-Total-Results" in response.headers
+    assert response.headers["X-Pagination-Total-Results"] == str(17)
+    assert response.headers["X-Pagination-Limit"] == "8"
+
+    assert len(response_data) > 0
+
+
+def test_specification(s3_bucket, duckdb_connection):
+    # Prepare test params
+    params = {
+        "offset": 0,
+        "limit": 8,
+    }
+
+    with patch("db.duckdb.connect", return_value=duckdb_connection):
+        # Test the function that interacts with DuckDB and S3 via LocalStack
+        response = client.get("/specification/specification", params=params)
+
+    # Validate the results from the search
+    assert response.status_code == 200
+
+    response_data = response.json()
+    assert "X-Pagination-Total-Results" in response.headers
+    assert response.headers["X-Pagination-Total-Results"] == str(16)
+    assert response.headers["X-Pagination-Limit"] == "8"
+
+    assert len(response_data) > 0

@@ -9,7 +9,7 @@ logger = get_logger(__name__)
 
 
 def search_issues(params: IssuesParams):
-    s3_uri = f"s3://{config.collection_bucket}/{config.issues_base_path}/**/*.parquet"
+    s3_uri = f"s3://{config.collection_bucket}/{config.issues_base_path}/**/*.parquet"  # noqa
     pagination = f"LIMIT {params.limit} OFFSET {params.offset}"
 
     where_clause = ""

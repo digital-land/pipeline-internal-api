@@ -6,7 +6,7 @@ import json
 from fastapi import FastAPI, Depends, Request
 from pydantic import ValidationError
 from fastapi.responses import JSONResponse
-from schema import HealthCheckResponse, IssuesParams, ProvisionParams
+from schema import HealthCheckResponse, IssuesParams, ProvisionParams, SpecificationsParams
 from log import get_logger
 
 from doc import app_info
@@ -68,7 +68,7 @@ def provision_summary(http_response: Response, params: ProvisionParams = Depends
 
 
 @app.get("/specification/specification", tags=["specification"])
-def get_specification(http_response: Response, params: ProvisionParams = Depends()):
+def get_specification(http_response: Response, params: SpecificationsParams = Depends()):
     paginated_result = db.get_specification(params)
     http_response.headers["X-Pagination-Total-Results"] = str(
         paginated_result.total_results_available

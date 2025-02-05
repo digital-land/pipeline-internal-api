@@ -1,6 +1,6 @@
 import duckdb
 from log import get_logger
-from schema import IssuesParams, ProvisionParams
+from schema import IssuesParams, ProvisionParams, SpecificationsParams
 from pagination_model import PaginationParams, PaginatedResult
 from config import config
 
@@ -96,7 +96,7 @@ def search_provision_summary(params: ProvisionParams):
             raise e
 
 
-def get_specification(params: ProvisionParams):
+def get_specification(params: SpecificationsParams):
     s3_uri = f"s3://{config.collection_bucket}/{config.specification_base_path}/*.parquet"  # noqa
     pagination = f"LIMIT {params.limit} OFFSET {params.offset}"
 

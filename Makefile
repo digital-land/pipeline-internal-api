@@ -9,7 +9,7 @@ coverage-unit:
 	pytest --cov=src tests/unit/
 
 coverage-integration:
-	pytest --cov=src --cov-append --cov-fail-under=75 tests/integration/
+	pytest --cov=src --cov-append --cov-fail-under=80 tests/integration/
 
 lint:: black-check flake8
 

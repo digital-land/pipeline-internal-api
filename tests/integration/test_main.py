@@ -2,7 +2,6 @@ from fastapi.testclient import TestClient
 from main import app
 import json
 
-
 # Create a test client for the FastAPI app
 client = TestClient(app)
 
@@ -56,7 +55,6 @@ def test_provision_summary(s3_bucket):
         "offset": 0,
         "limit": 8,
     }
-
     response = client.get("/performance/provision_summary", params=params)
 
     # Validate the results from the search
@@ -68,6 +66,12 @@ def test_provision_summary(s3_bucket):
     assert response.headers["X-Pagination-Limit"] == "8"
 
     assert len(response_data) > 0
+    assert response_data[0]["dataset"] == "article-4-direction"
+    for item in response_data:
+        if item.get("dataset") == "article-4-direction-area":
+            assert (
+                item.get("active_endpoint_count") == 1
+            ), "Expected active endpoint count to be 1"
 
 
 def test_specification(s3_bucket):
@@ -88,3 +92,4 @@ def test_specification(s3_bucket):
     assert response.headers["X-Pagination-Limit"] == "8"
 
     assert len(response_data) > 0
+    assert response_data[0]["name"] == "Article 4 direction"

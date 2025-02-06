@@ -9,6 +9,8 @@ os.environ["AWS_SECRET_ACCESS_KEY"] = "test"
 os.environ["AWS_DEFAULT_REGION"] = "eu-west-2"
 os.environ["COLLECTION_BUCKET"] = "test-bucket"
 os.environ["ISSUES_BASE_PATH"] = "test/path"
+os.environ["PERFORMANCE_BASE_PATH"] = "test/path_perf"
+os.environ["SPECIFICATION_BASE_PATH"] = "test/path_spec"
 os.environ["USE_AWS_CREDENTIAL_CHAIN"] = "false"
 os.environ["DUCKDB_S3_USE_SSL"] = "false"
 
@@ -20,7 +22,7 @@ def localstack_container():
         # Wait for the service to be ready
         os.environ[
             "DUCKDB_S3_ENDPOINT"
-        ] = f"s3.localhost.localstack.cloud:{localstack.get_exposed_port(4566)}"
+        ] = f"s3.localhost.localstack.cloud:{localstack.get_exposed_port(4566)}"  # noqa
         yield localstack
 
 
@@ -63,6 +65,22 @@ def s3_bucket(s3_client, test_dir):
         s3_client.put_object(
             Bucket=bucket_name,
             Key=f"{os.environ['ISSUES_BASE_PATH']}/issues.parquet",
+            Body=f,
+        )
+
+    parquet_file1 = f"{test_dir}/../files/provision_summary.parquet"
+    with open(parquet_file1, "rb") as f:
+        s3_client.put_object(
+            Bucket=bucket_name,
+            Key=f"{os.environ['PERFORMANCE_BASE_PATH']}/provision_summary.parquet",
+            Body=f,
+        )
+
+    parquet_file2 = f"{test_dir}/../files/specification.parquet"
+    with open(parquet_file2, "rb") as f:
+        s3_client.put_object(
+            Bucket=bucket_name,
+            Key=f"{os.environ['SPECIFICATION_BASE_PATH']}/specification.parquet",
             Body=f,
         )
 

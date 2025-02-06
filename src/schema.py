@@ -4,9 +4,12 @@ from typing import Optional, List
 from pydantic import BaseModel, Field, validator
 
 
-class IssuesParams(BaseModel):
+class BaseParams(BaseModel):
     offset: int = Field(0, ge=0)
     limit: int = Field(50, ge=1, le=100)
+
+
+class IssuesParams(BaseParams):
     dataset: Optional[str] = Field(None)
     resource: Optional[str] = Field(None)
     field: Optional[str] = Field(None)
@@ -32,6 +35,15 @@ class Issue(BaseModel):
     issue_type: str
     value: str
     message: str
+
+
+class ProvisionParams(BaseParams):
+    dataset: Optional[str] = Field(None)
+    organisation: Optional[str] = Field(None)
+
+
+class SpecificationsParams(BaseParams):
+    dataset: Optional[str] = Field(None)
 
 
 class HealthStatus(str, Enum):

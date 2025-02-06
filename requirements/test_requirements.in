@@ -1,7 +1,6 @@
 -r requirements.txt
 pytest
 moto[s3]
-cryptography==3.4.8 #Needed to control version of transient dependancy used by moto[s3]
 testcontainers[localstack]
 urllib3==1.26.18
 boto3==1.34.113

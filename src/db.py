@@ -138,7 +138,6 @@ def get_specification(params: SpecificationsParams):
             # Extract and parse the JSON field
             json_results = []
             for item in results:
-                logger.error(item)
                 if "json" in item and isinstance(item["json"], str):
                     try:
                         parsed_json = json.loads(item["json"])

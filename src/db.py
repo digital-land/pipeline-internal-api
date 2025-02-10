@@ -109,15 +109,15 @@ def get_specification(params: SpecificationsParams):
         )
 
     sql_count = f"""
-    SELECT COUNT(*) FROM (SELECT unnest(CAST(json AS VARCHAR[])) AS value FROM '{s3_uri}') 
-    as parsed_json {where_clause} {pagination}
+    SELECT COUNT(*) FROM (SELECT unnest(CAST(json AS VARCHAR[])) AS value 
+    FROM '{s3_uri}') as parsed_json {where_clause} {pagination}
     """
     logger.debug(sql_count)
     sql_results = f"""
     SELECT value as json FROM 
-    (SELECT unnest(CAST(json AS VARCHAR[])) AS value FROM '{s3_uri}') 
-    as parsed_json {where_clause} {pagination}
-            """
+    (SELECT unnest(CAST(json AS VARCHAR[])) AS value FROM '{s3_uri}') AS parsed_json
+    {where_clause} {pagination}
+    """
     logger.debug(sql_results)
 
     with duckdb.connect() as conn:

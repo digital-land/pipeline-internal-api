@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 from main import app
+import json
 
 # Create a test client for the FastAPI app
 client = TestClient(app)

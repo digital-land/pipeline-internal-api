@@ -3,7 +3,7 @@ from log import get_logger
 from schema import IssuesParams, ProvisionParams, SpecificationsParams
 from pagination_model import PaginationParams, PaginatedResult
 from config import config
-
+import json
 
 logger = get_logger(__name__)
 
@@ -101,12 +101,23 @@ def get_specification(params: SpecificationsParams):
     pagination = f"LIMIT {params.limit} OFFSET {params.offset}"
 
     where_clause = ""
-    if params.dataset:
-        where_clause += _add_condition(where_clause, f"dataset = '{params.dataset}'")
 
-    sql_count = f"SELECT COUNT(*) FROM '{s3_uri}' {where_clause}"
+    if params.dataset:
+        where_clause += _add_condition(
+            where_clause,
+            f"TRIM(BOTH '\"' FROM json_extract(json(value), '$.dataset')) = '{params.dataset}'",
+        )
+
+    sql_count = f"""
+    SELECT COUNT(*) FROM (SELECT unnest(CAST(json AS VARCHAR[])) AS value FROM '{s3_uri}') 
+    as parsed_json {where_clause} {pagination}
+    """
     logger.debug(sql_count)
-    sql_results = f"SELECT * FROM '{s3_uri}' {where_clause} {pagination}"
+    sql_results = f"""
+    SELECT value as json FROM 
+    (SELECT unnest(CAST(json AS VARCHAR[])) AS value FROM '{s3_uri}') 
+    as parsed_json {where_clause} {pagination}
+            """
     logger.debug(sql_results)
 
     with duckdb.connect() as conn:
@@ -118,14 +129,27 @@ def get_specification(params: SpecificationsParams):
                     ).fetchall()
                 )
                 logger.debug(conn.execute("FROM duckdb_secrets();").fetchall())
+
             count = conn.execute(sql_count).fetchone()[
                 0
             ]  # Count is first item in Tuple
             results = conn.execute(sql_results).arrow().to_pylist()
+
+            # Extract and parse the JSON field
+            json_results = []
+            for item in results:
+                logger.error(item)
+                if "json" in item and isinstance(item["json"], str):
+                    try:
+                        parsed_json = json.loads(item["json"])
+                        json_results.append(parsed_json)
+                    except json.JSONDecodeError:
+                        logger.warning(f"Invalid JSON format in row: {item['json']}")
+
             return PaginatedResult(
                 params=PaginationParams(offset=params.offset, limit=params.limit),
                 total_results_available=count,
-                data=results,
+                data=json_results,
             )
         except Exception as e:
             logger.exception(

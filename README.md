@@ -19,7 +19,7 @@ In order to build and test the software outside of Docker, you will need
 
 You can run the API locally by running either `make compose-up` or `docker compose up -d --build`.
 
-The docker compose setup runs the S3 locally using Localstack as well as the API.  An S3 bucket called local-collection-data is created and seeded with example issue log data.
+The docker compose setup runs the S3 locally using Localstack as well as the API.  An S3 bucket called local-collection-data is created and seeded with example files in the collection-data directory.
 
 
 ## Swagger UI
@@ -69,3 +69,28 @@ Request for issues for a specific dataset and resource:
 curl http://localhost:8000/log/issue?dataset=border&resource=4a57239e3c1174c80b6d4a0278ab386a7c3664f2e985b2e07a66bbec84988b30&field=geometry
 ```
 
+### provision_summary endpoint
+
+can be accessed via
+```
+http://localhost:8000/performance/provision_summary?organisation=local-authority:LBH&offset=50&limit=100
+```
+
+Optional Parameters:
+ * Offset
+ * Limit
+ * Organisation
+ * Dataset
+
+
+### specification endpoint
+
+can be accessed via
+```
+http://localhost:8000/specification/specification?offset=0&limit=10
+```
+
+Optional Parameters:
+ * Offset
+ * Limit
+ * Dataset

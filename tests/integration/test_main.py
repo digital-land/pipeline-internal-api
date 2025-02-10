@@ -92,6 +92,7 @@ def test_specification(s3_bucket):
 
     assert len(response_data) > 0
 
+
 def test_specification_with_dataset(s3_bucket):
     # Prepare test params
     params = {

@@ -117,18 +117,15 @@ def get_specification(params: SpecificationsParams):
 
     sql_count = f"""
     SELECT COUNT(*) FROM (
-        SELECT unnest(CAST(json AS VARCHAR[])) AS value 
-        FROM '{s3_uri}'
-    ) AS parsed_json {where_clause}
+    SELECT unnest(CAST(json AS VARCHAR[])) AS value 
+    FROM '{s3_uri}') AS parsed_json {where_clause}
     LIMIT ? OFFSET ?
     """
 
     sql_results = f"""
     SELECT value AS json FROM (
-        SELECT unnest(CAST(json AS VARCHAR[])) AS value 
-        FROM '{s3_uri}'
-    ) AS parsed_json
-    {where_clause} 
+    SELECT unnest(CAST(json AS VARCHAR[])) AS value 
+    FROM '{s3_uri}') AS parsed_json {where_clause} 
     LIMIT ? OFFSET ?
     """
 

@@ -88,8 +88,31 @@ def test_specification(s3_bucket):
 
     response_data = response.json()
     assert "X-Pagination-Total-Results" in response.headers
-    assert response.headers["X-Pagination-Total-Results"] == str(16)
+    assert response.headers["X-Pagination-Total-Results"] == str(36)
     assert response.headers["X-Pagination-Limit"] == "8"
 
     assert len(response_data) > 0
-    assert response_data[0]["name"] == "Article 4 direction"
+
+
+def test_specification_with_dataset(s3_bucket):
+    # Prepare test params
+    params = {
+        "offset": 0,
+        "limit": 8,
+        "dataset": "article-4-direction-area",
+    }
+
+    response = client.get("/specification/specification", params=params)
+
+    # Validate the results from the search
+    assert response.status_code == 200
+
+    response_data = response.json()
+    assert "X-Pagination-Total-Results" in response.headers
+    assert response.headers["X-Pagination-Total-Results"] == str(1)
+    assert response.headers["X-Pagination-Limit"] == "8"
+
+    assert len(response_data) > 0
+    assert response_data[0]["dataset"] == "article-4-direction-area"
+    assert response_data[0]["fields"]
+    assert len(response_data[0]["fields"]) > 1

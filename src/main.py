@@ -8,9 +8,10 @@ from pydantic import ValidationError
 from fastapi.responses import JSONResponse
 from schema import (
     HealthCheckResponse,
+    CommonParams,
     IssuesParams,
-    ProvisionParams,
     SpecificationsParams,
+    IssueTypeSummaryParams,
 )
 from log import get_logger
 
@@ -58,8 +59,55 @@ def issues(http_response: Response, params: IssuesParams = Depends()):
 
 
 @app.get("/performance/provision_summary", tags=["provision_summary"])
-def provision_summary(http_response: Response, params: ProvisionParams = Depends()):
+def provision_summary(http_response: Response, params: CommonParams = Depends()):
     paginated_result = db.search_provision_summary(params)
+    http_response.headers["X-Pagination-Total-Results"] = str(
+        paginated_result.total_results_available
+    )
+    http_response.headers["X-Pagination-Offset"] = str(paginated_result.params.offset)
+    http_response.headers["X-Pagination-Limit"] = str(paginated_result.params.limit)
+    return Response(
+        content=json.dumps(paginated_result.data),
+        media_type="application/json",
+        headers=http_response.headers,
+    )
+
+
+@app.get("/performance/issue_type_summary", tags=["issue_type_summary"])
+def issue_type_summary(
+    http_response: Response, params: IssueTypeSummaryParams = Depends()
+):
+    paginated_result = db.search_issue_type_summary(params)
+    http_response.headers["X-Pagination-Total-Results"] = str(
+        paginated_result.total_results_available
+    )
+    http_response.headers["X-Pagination-Offset"] = str(paginated_result.params.offset)
+    http_response.headers["X-Pagination-Limit"] = str(paginated_result.params.limit)
+    return Response(
+        content=json.dumps(paginated_result.data),
+        media_type="application/json",
+        headers=http_response.headers,
+    )
+
+
+@app.get("/performance/dataset_resource_mapping", tags=["dataset_resource_mapping"])
+def dataset_resource_mapping(http_response: Response, params: CommonParams = Depends()):
+    paginated_result = db.search_dataset_resource_mapping(params)
+    http_response.headers["X-Pagination-Total-Results"] = str(
+        paginated_result.total_results_available
+    )
+    http_response.headers["X-Pagination-Offset"] = str(paginated_result.params.offset)
+    http_response.headers["X-Pagination-Limit"] = str(paginated_result.params.limit)
+    return Response(
+        content=json.dumps(paginated_result.data),
+        media_type="application/json",
+        headers=http_response.headers,
+    )
+
+
+@app.get("/performance/endpoint_dataset_summary", tags=["endpoint_dataset_summary"])
+def endpoint_dataset_summary(http_response: Response, params: CommonParams = Depends()):
+    paginated_result = db.search_endpoint_dataset_summary(params)
     http_response.headers["X-Pagination-Total-Results"] = str(
         paginated_result.total_results_available
     )

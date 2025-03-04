@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 from main import app
+from unittest.mock import patch
 import json
 
 # Create a test client for the FastAPI app
@@ -74,14 +75,15 @@ def test_provision_summary(s3_bucket):
             ), "Expected active endpoint count to be 1"
 
 
-def test_specification(s3_bucket):
+def test_specification(s3_bucket, duckdb_connection):
     # Prepare test params
     params = {
         "offset": 0,
         "limit": 8,
     }
 
-    response = client.get("/specification/specification", params=params)
+    with patch("db.duckdb.connect", return_value=duckdb_connection):
+        response = client.get("/specification/specification", params=params)
 
     # Validate the results from the search
     assert response.status_code == 200
@@ -94,7 +96,7 @@ def test_specification(s3_bucket):
     assert len(response_data) > 0
 
 
-def test_specification_with_dataset(s3_bucket):
+def test_specification_with_dataset(s3_bucket, duckdb_connection):
     # Prepare test params
     params = {
         "offset": 0,
@@ -102,7 +104,8 @@ def test_specification_with_dataset(s3_bucket):
         "dataset": "article-4-direction-area",
     }
 
-    response = client.get("/specification/specification", params=params)
+    with patch("db.duckdb.connect", return_value=duckdb_connection):
+        response = client.get("/specification/specification", params=params)
 
     # Validate the results from the search
     assert response.status_code == 200
@@ -116,3 +119,30 @@ def test_specification_with_dataset(s3_bucket):
     assert response_data[0]["dataset"] == "article-4-direction-area"
     assert response_data[0]["fields"]
     assert len(response_data[0]["fields"]) > 1
+
+def test_issue_type_summary(s3_bucket):
+    # Prepare test params
+    params = {
+        "organisation": "local-authority:BUC",
+        "dataset": "brownfield-land",
+        "offset": 0,
+        "limit": 8,
+    }
+    response = client.get("/performance/issue_type_summary", params=params)
+
+    # Validate the results from the search
+    assert response.status_code == 200
+
+    response_data = response.json()
+    assert "X-Pagination-Total-Results" in response.headers
+    assert response.headers["X-Pagination-Total-Results"] == str(11)
+    assert response.headers["X-Pagination-Limit"] == "8"
+
+    assert len(response_data) > 0
+    filtered_rows = [
+            item for item in response_data
+            if item.get("resource") == "8c61c7b72902daeaaa462002e62d840ce3916defacd54db97986654b180ce250"
+        ]
+    
+    assert len(filtered_rows) == 5 
+    assert sum(1 for item in filtered_rows if item.get("issue_type") == "patch") == 3  # Ensure 3 have issue_type as "patch"

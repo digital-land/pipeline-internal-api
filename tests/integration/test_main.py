@@ -120,6 +120,7 @@ def test_specification_with_dataset(s3_bucket, duckdb_connection):
     assert response_data[0]["fields"]
     assert len(response_data[0]["fields"]) > 1
 
+
 def test_issue_type_summary(s3_bucket):
     # Prepare test params
     params = {
@@ -140,9 +141,13 @@ def test_issue_type_summary(s3_bucket):
 
     assert len(response_data) > 0
     filtered_rows = [
-            item for item in response_data
-            if item.get("resource") == "8c61c7b72902daeaaa462002e62d840ce3916defacd54db97986654b180ce250"
-        ]
-    
-    assert len(filtered_rows) == 5 
-    assert sum(1 for item in filtered_rows if item.get("issue_type") == "patch") == 3  # Ensure 3 have issue_type as "patch"
+        item
+        for item in response_data
+        if item.get("resource")
+        == "8c61c7b72902daeaaa462002e62d840ce3916defacd54db97986654b180ce250"
+    ]
+
+    assert len(filtered_rows) == 5
+    assert (
+        sum(1 for item in filtered_rows if item.get("issue_type") == "patch") == 3
+    )  # Ensure 3 have issue_type as "patch"

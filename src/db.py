@@ -140,7 +140,7 @@ def search_issue_type_summary(params: IssueTypeSummaryParams):
     sql_count = f"SELECT COUNT(*) FROM '{s3_uri}' {where_clause}"
     sql_results = f"""
     SELECT organisation, organisation_name, dataset, issue_type, fields, 
-    count_issues, severity, responsibility  FROM '{s3_uri}' {where_clause} LIMIT ? OFFSET ?"""
+count_issues, severity, responsibility  FROM '{s3_uri}' {where_clause} LIMIT ? OFFSET ?"""
 
     logger.debug(sql_count)
     logger.debug(sql_results)
@@ -189,9 +189,8 @@ def search_dataset_resource_mapping(params: CommonParams):
 
     sql_count = f"SELECT COUNT(*) FROM '{s3_uri}' {where_clause}"
     sql_results = f"""
-        SELECT organisation, dataset, resource, mapped_fields FROM 
-        '{s3_uri}' {where_clause} 
-        LIMIT ? OFFSET ?"""
+    SELECT organisation, dataset, resource, mapped_fields FROM 
+'{s3_uri}' {where_clause} LIMIT ? OFFSET ?"""
 
     logger.debug(sql_count)
     logger.debug(sql_results)

@@ -3,6 +3,7 @@ import pytest
 import boto3
 from testcontainers.localstack import LocalStackContainer
 from botocore.exceptions import ClientError
+import glob
 
 os.environ["AWS_ACCESS_KEY_ID"] = "test"
 os.environ["AWS_SECRET_ACCESS_KEY"] = "test"

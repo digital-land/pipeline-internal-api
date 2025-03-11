@@ -9,6 +9,11 @@ class BaseParams(BaseModel):
     limit: int = Field(50, ge=1, le=100)
 
 
+class CommonParams(BaseParams):
+    dataset: Optional[str] = Field(None)
+    organisation: Optional[str] = Field(None)
+
+
 class IssuesParams(BaseParams):
     dataset: Optional[str] = Field(None)
     resource: Optional[str] = Field(None)
@@ -37,9 +42,13 @@ class Issue(BaseModel):
     message: str
 
 
-class ProvisionParams(BaseParams):
+class IssueTypeSummaryParams(BaseParams):
     dataset: Optional[str] = Field(None)
     organisation: Optional[str] = Field(None)
+    issueType: Optional[str] = Field(None)
+    issueField: Optional[str] = Field(None)
+    severity: Optional[str] = Field(None)
+    responsibility: Optional[str] = Field(None)
 
 
 class SpecificationsParams(BaseParams):

@@ -3,6 +3,7 @@ import pytest
 import boto3
 from testcontainers.localstack import LocalStackContainer
 from botocore.exceptions import ClientError
+import glob
 
 os.environ["AWS_ACCESS_KEY_ID"] = "test"
 os.environ["AWS_SECRET_ACCESS_KEY"] = "test"
@@ -68,13 +69,17 @@ def s3_bucket(s3_client, test_dir):
             Body=f,
         )
 
-    parquet_file1 = f"{test_dir}/../files/provision_summary.parquet"
-    with open(parquet_file1, "rb") as f:
-        s3_client.put_object(
-            Bucket=bucket_name,
-            Key=f"{os.environ['PERFORMANCE_BASE_PATH']}/provision_summary.parquet",
-            Body=f,
-        )
+    perf_parquet_files = glob.glob(f"{test_dir}/../files/performance/*.parquet")
+    for file_path in perf_parquet_files:
+        file_name = os.path.basename(file_path)
+        s3_key = f"{os.environ['PERFORMANCE_BASE_PATH']}/{file_name}"
+
+        with open(file_path, "rb") as f:
+            s3_client.put_object(
+                Bucket=bucket_name,
+                Key=s3_key,
+                Body=f,
+            )
 
     parquet_file2 = f"{test_dir}/../files/specification.parquet"
     with open(parquet_file2, "rb") as f:

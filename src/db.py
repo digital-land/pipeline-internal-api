@@ -93,6 +93,11 @@ def search_issue_type_summary(params: IssueTypeSummaryParams):
         where_clause += _add_condition(where_clause, "responsibility = ?")
         query_params.append(params.responsibility)
 
+    if params.resource_list:
+        placeholders = ", ".join(["?"] * len(params.resource_list))
+        where_clause += _add_condition(where_clause, f"resource IN ({placeholders})")
+        query_params.extend(params.resource_list)
+
     sql_count = f"SELECT COUNT(*) FROM '{s3_uri}' {where_clause}"
     sql_results = f"""
     SELECT organisation, organisation_name, dataset, resource, issue_type, field, 

@@ -1,7 +1,11 @@
 import duckdb
 import sys
 
-s3_uri = sys.argv[1] if len(sys.argv) > 1 else "s3://production-collection-data/data/performance/endpoint_dataset_issue_type_summary.parquet"
+s3_uri = (
+    sys.argv[1]
+    if len(sys.argv) > 1
+    else "s3://production-collection-data/data/performance/endpoint_dataset_issue_type_summary.parquet"
+)
 
 with duckdb.connect() as conn:
     conn.execute("CREATE SECRET aws (TYPE S3, PROVIDER CREDENTIAL_CHAIN);")

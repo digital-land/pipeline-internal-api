@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse
 from schema import (
     HealthCheckResponse,
     CommonParams,
+    DatasetResourceMappingParams,
     IssuesParams,
     SpecificationsParams,
     IssueTypeSummaryParams,
@@ -91,7 +92,7 @@ def issue_type_summary(
 
 
 @app.get("/performance/dataset_resource_mapping", tags=["dataset_resource_mapping"])
-def dataset_resource_mapping(http_response: Response, params: CommonParams = Depends()):
+def dataset_resource_mapping(http_response: Response, params: DatasetResourceMappingParams = Depends()):
     paginated_result = db.search_dataset_resource_mapping(params)
     http_response.headers["X-Pagination-Total-Results"] = str(
         paginated_result.total_results_available

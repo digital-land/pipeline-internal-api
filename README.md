@@ -29,9 +29,35 @@ The Swagger UI bundled with Fast API is a useful way to explore the API and try 
 http://localhost:8000/docs
 
 
-### Issue endpoint
+## S3 Data Sources
+
+All endpoints read from the `production-collection-data` S3 bucket (configurable via `COLLECTION_BUCKET`):
+
+| Endpoint | S3 Path |
+|---|---|
+| `/log/issue` | `log/issue/**/*.parquet` |
+| `/performance/provision_summary` | `data/performance/provision_summary.parquet` |
+| `/performance/issue_type_summary` | `data/performance/endpoint_dataset_issue_type_summary.parquet` |
+| `/performance/dataset_resource_mapping` | `data/performance/endpoint_dataset_resource_summary.parquet` |
+| `/performance/endpoint_dataset_summary` | `data/performance/endpoint_dataset_summary.parquet` |
+| `/specification/specification` | `data/specification/*.parquet` |
+
+
+## Endpoints
+
+### /log/issue
+
+S3 path: `log/issue/**/*.parquet`
 
 The /log/issue path exposes issue logs in a paginated result style.  Offset and limit query parameters control the page of results you want to obtain while the X-Pagination-* headers provide the context for where you are within the result set as well as the total results available.
+
+Optional Parameters:
+ * `offset`
+ * `limit`
+ * `dataset` (required)
+ * `resource`
+ * `field`
+ * `issue_type`
 
 Most basic request:
 
@@ -69,28 +95,77 @@ Request for issues for a specific dataset and resource:
 curl http://localhost:8000/log/issue?dataset=border&resource=4a57239e3c1174c80b6d4a0278ab386a7c3664f2e985b2e07a66bbec84988b30&field=geometry
 ```
 
-### provision_summary endpoint
+### /performance/provision_summary
 
-can be accessed via
+S3 path: `data/performance/provision_summary.parquet`
+
 ```
 http://localhost:8000/performance/provision_summary?organisation=local-authority:LBH&offset=50&limit=100
 ```
 
 Optional Parameters:
- * Offset
- * Limit
- * Organisation
- * Dataset
+ * `offset`
+ * `limit`
+ * `organisation`
+ * `dataset`
 
+### /performance/issue_type_summary
 
-### specification endpoint
+S3 path: `data/performance/endpoint_dataset_issue_type_summary.parquet`
 
-can be accessed via
+```
+http://localhost:8000/performance/issue_type_summary?dataset=ancient-woodland&severity=error&responsibility=external
+```
+
+Optional Parameters:
+ * `offset`
+ * `limit`
+ * `dataset`
+ * `organisation`
+ * `issueType`
+ * `issueField`
+ * `severity`
+ * `responsibility`
+ * `resource` (comma-separated list of resource hashes)
+
+### /performance/dataset_resource_mapping
+
+S3 path: `data/performance/endpoint_dataset_resource_summary.parquet`
+
+```
+http://localhost:8000/performance/dataset_resource_mapping?dataset=ancient-woodland
+```
+
+Optional Parameters:
+ * `offset`
+ * `limit`
+ * `dataset`
+ * `organisation`
+ * `endpoint_url`
+
+### /performance/endpoint_dataset_summary
+
+S3 path: `data/performance/endpoint_dataset_summary.parquet`
+
+```
+http://localhost:8000/performance/endpoint_dataset_summary?dataset=ancient-woodland
+```
+
+Optional Parameters:
+ * `offset`
+ * `limit`
+ * `dataset`
+ * `organisation`
+
+### /specification/specification
+
+S3 path: `data/specification/*.parquet`
+
 ```
 http://localhost:8000/specification/specification?offset=0&limit=10
 ```
 
 Optional Parameters:
- * Offset
- * Limit
- * Dataset
+ * `offset`
+ * `limit`
+ * `dataset`

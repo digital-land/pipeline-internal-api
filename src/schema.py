@@ -58,6 +58,10 @@ class IssueTypeSummaryParams(BaseParams):
         return None
 
 
+class DatasetResourceMappingParams(CommonParams):
+    endpoint_url: Optional[str] = Field(None)
+
+
 class SpecificationsParams(BaseParams):
     dataset: Optional[str] = Field(None)
 

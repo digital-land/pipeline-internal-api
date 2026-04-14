@@ -2,6 +2,7 @@ import duckdb
 from log import get_logger
 from schema import (
     CommonParams,
+    DatasetResourceMappingParams,
     IssuesParams,
     SpecificationsParams,
     IssueTypeSummaryParams,
@@ -109,7 +110,7 @@ count_issues, severity, responsibility  FROM '{s3_uri}' {where_clause} LIMIT ? O
     return duck_db_connection(params, query_params, sql_count, sql_results)
 
 
-def search_dataset_resource_mapping(params: CommonParams):
+def search_dataset_resource_mapping(params: DatasetResourceMappingParams):
     s3_uri = f"s3://{config.collection_bucket}/{config.performance_base_path}/endpoint_dataset_resource_summary.parquet"  # noqa
 
     where_clause = ""
@@ -122,6 +123,10 @@ def search_dataset_resource_mapping(params: CommonParams):
     if params.organisation:
         where_clause += _add_condition(where_clause, "organisation = ?")
         query_params.append(params.organisation)
+
+    if params.endpoint_url:
+        where_clause += _add_condition(where_clause, "endpoint_url = ?")
+        query_params.append(params.endpoint_url)
 
     sql_count = f"SELECT COUNT(*) FROM '{s3_uri}' {where_clause}"
     sql_results = f"SELECT * FROM '{s3_uri}' {where_clause} LIMIT ? OFFSET ?"

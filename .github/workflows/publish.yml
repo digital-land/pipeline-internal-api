@@ -83,3 +83,24 @@ jobs:
 
       - run: docker push $DOCKER_REPO:${GITHUB_REF_NAME}
 
+      - name: Download current task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition development-pipeline-int-api \
+            --query taskDefinition > task-definition.json
+
+      - name: Update ECS task definition with new image
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: development-pipeline-int-api
+          image: ${{ env.DOCKER_REPO }}:${{ steps.vars.outputs.sha_short }}
+
+      - name: Deploy to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: development-pipeline-int-api
+          cluster: development-cluster
+          wait-for-service-stability: true

@@ -13,6 +13,7 @@ from schema import (
     IssueTypeSummaryParams,
     CommonParams,
     DatasetResourceMappingParams,
+    EndpointDatasetSummaryParams,
     SpecificationsParams,
 )
 from pagination_model import PaginatedResult
@@ -229,8 +230,15 @@ def test_search_dataset_resource_mapping(
     assert result.data[1]["dataset"] == "data2"
 
 
+@pytest.fixture
+def sample_endpoint_dataset_summary_params():
+    return EndpointDatasetSummaryParams(
+        dataset="sample_dataset", organisation="sample_org", limit=10, offset=0
+    )
+
+
 @patch("duckdb.connect")
-def test_search_endpoint_dataset_summary(mock_connect, sample_common_params):
+def test_search_endpoint_dataset_summary(mock_connect, sample_endpoint_dataset_summary_params):
     """Test search_endpoint_dataset_summary with mocked DuckDB connection."""
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
@@ -244,7 +252,7 @@ def test_search_endpoint_dataset_summary(mock_connect, sample_common_params):
     mock_conn.execute.return_value = mock_cursor
     mock_connect.return_value.__enter__.return_value = mock_conn
 
-    result = search_endpoint_dataset_summary(sample_common_params)
+    result = search_endpoint_dataset_summary(sample_endpoint_dataset_summary_params)
 
     assert isinstance(result, PaginatedResult)
     assert result.total_results_available == 8

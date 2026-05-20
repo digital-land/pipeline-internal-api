@@ -238,7 +238,9 @@ def sample_endpoint_dataset_summary_params():
 
 
 @patch("duckdb.connect")
-def test_search_endpoint_dataset_summary(mock_connect, sample_endpoint_dataset_summary_params):
+def test_search_endpoint_dataset_summary(
+    mock_connect, sample_endpoint_dataset_summary_params
+):
     """Test search_endpoint_dataset_summary with mocked DuckDB connection."""
     mock_conn = MagicMock()
     mock_cursor = MagicMock()

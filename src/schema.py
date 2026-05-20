@@ -62,6 +62,10 @@ class DatasetResourceMappingParams(CommonParams):
     endpoint_url: Optional[str] = Field(None)
 
 
+class EndpointDatasetSummaryParams(CommonParams):
+    endpoint_url: Optional[str] = Field(None)
+
+
 class SpecificationsParams(BaseParams):
     dataset: Optional[str] = Field(None)
 

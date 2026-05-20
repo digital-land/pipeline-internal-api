@@ -11,6 +11,7 @@ from schema import (
     HealthCheckResponse,
     CommonParams,
     DatasetResourceMappingParams,
+    EndpointDatasetSummaryParams,
     IssuesParams,
     SpecificationsParams,
     IssueTypeSummaryParams,
@@ -115,7 +116,7 @@ def dataset_resource_mapping(
 
 
 @app.get("/performance/endpoint_dataset_summary", tags=["endpoint_dataset_summary"])
-def endpoint_dataset_summary(http_response: Response, params: CommonParams = Depends()):
+def endpoint_dataset_summary(http_response: Response, params: EndpointDatasetSummaryParams = Depends()):
     paginated_result = db.search_endpoint_dataset_summary(params)
     http_response.headers["X-Pagination-Total-Results"] = str(
         paginated_result.total_results_available

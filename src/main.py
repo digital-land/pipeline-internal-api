@@ -1,5 +1,6 @@
 from fastapi import Response
 from fastapi.openapi.models import Contact
+from fastapi.middleware.cors import CORSMiddleware
 
 import db
 import json
@@ -23,6 +24,11 @@ app = FastAPI(
     summary=app_info.summary,
     version=app_info.version,
     contact=Contact(email=app_info.contact),
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_headers=["Accept"],
 )
 logger = get_logger(__name__)
 

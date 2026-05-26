@@ -1,5 +1,6 @@
 from fastapi import Response
 from fastapi.openapi.models import Contact
+from fastapi.middleware.cors import CORSMiddleware
 
 import db
 import json
@@ -9,6 +10,8 @@ from fastapi.responses import JSONResponse
 from schema import (
     HealthCheckResponse,
     CommonParams,
+    DatasetResourceMappingParams,
+    EndpointDatasetSummaryParams,
     IssuesParams,
     SpecificationsParams,
     IssueTypeSummaryParams,
@@ -22,6 +25,11 @@ app = FastAPI(
     summary=app_info.summary,
     version=app_info.version,
     contact=Contact(email=app_info.contact),
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_headers=["Accept"],
 )
 logger = get_logger(__name__)
 
@@ -91,7 +99,9 @@ def issue_type_summary(
 
 
 @app.get("/performance/dataset_resource_mapping", tags=["dataset_resource_mapping"])
-def dataset_resource_mapping(http_response: Response, params: CommonParams = Depends()):
+def dataset_resource_mapping(
+    http_response: Response, params: DatasetResourceMappingParams = Depends()
+):
     paginated_result = db.search_dataset_resource_mapping(params)
     http_response.headers["X-Pagination-Total-Results"] = str(
         paginated_result.total_results_available
@@ -106,7 +116,9 @@ def dataset_resource_mapping(http_response: Response, params: CommonParams = Dep
 
 
 @app.get("/performance/endpoint_dataset_summary", tags=["endpoint_dataset_summary"])
-def endpoint_dataset_summary(http_response: Response, params: CommonParams = Depends()):
+def endpoint_dataset_summary(
+    http_response: Response, params: EndpointDatasetSummaryParams = Depends()
+):
     paginated_result = db.search_endpoint_dataset_summary(params)
     http_response.headers["X-Pagination-Total-Results"] = str(
         paginated_result.total_results_available

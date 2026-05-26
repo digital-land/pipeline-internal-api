@@ -49,6 +49,21 @@ class IssueTypeSummaryParams(BaseParams):
     issueField: Optional[str] = Field(None)
     severity: Optional[str] = Field(None)
     responsibility: Optional[str] = Field(None)
+    resource: Optional[str] = Field(None)
+
+    @property
+    def resource_list(self) -> Optional[list]:
+        if self.resource:
+            return [r.strip() for r in self.resource.split(",")]
+        return None
+
+
+class DatasetResourceMappingParams(CommonParams):
+    endpoint_url: Optional[str] = Field(None)
+
+
+class EndpointDatasetSummaryParams(CommonParams):
+    endpoint_url: Optional[str] = Field(None)
 
 
 class SpecificationsParams(BaseParams):

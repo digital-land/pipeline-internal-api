@@ -12,6 +12,8 @@ from schema import (
     IssuesParams,
     IssueTypeSummaryParams,
     CommonParams,
+    DatasetResourceMappingParams,
+    EndpointDatasetSummaryParams,
     SpecificationsParams,
 )
 from pagination_model import PaginatedResult
@@ -76,6 +78,13 @@ def sample_issue_type_params():
 @pytest.fixture
 def sample_common_params():
     return CommonParams(
+        dataset="sample_dataset", organisation="sample_org", limit=10, offset=0
+    )
+
+
+@pytest.fixture
+def sample_dataset_resource_mapping_params():
+    return DatasetResourceMappingParams(
         dataset="sample_dataset", organisation="sample_org", limit=10, offset=0
     )
 
@@ -197,7 +206,9 @@ def test_search_issue_type_summary(mock_connect, sample_issue_type_params):
 
 
 @patch("duckdb.connect")
-def test_search_dataset_resource_mapping(mock_connect, sample_common_params):
+def test_search_dataset_resource_mapping(
+    mock_connect, sample_dataset_resource_mapping_params
+):
     """Test search_dataset_resource_mapping with mocked DuckDB connection."""
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
@@ -211,7 +222,7 @@ def test_search_dataset_resource_mapping(mock_connect, sample_common_params):
     mock_conn.execute.return_value = mock_cursor
     mock_connect.return_value.__enter__.return_value = mock_conn
 
-    result = search_dataset_resource_mapping(sample_common_params)
+    result = search_dataset_resource_mapping(sample_dataset_resource_mapping_params)
 
     assert isinstance(result, PaginatedResult)
     assert result.total_results_available == 3
@@ -219,8 +230,17 @@ def test_search_dataset_resource_mapping(mock_connect, sample_common_params):
     assert result.data[1]["dataset"] == "data2"
 
 
+@pytest.fixture
+def sample_endpoint_dataset_summary_params():
+    return EndpointDatasetSummaryParams(
+        dataset="sample_dataset", organisation="sample_org", limit=10, offset=0
+    )
+
+
 @patch("duckdb.connect")
-def test_search_endpoint_dataset_summary(mock_connect, sample_common_params):
+def test_search_endpoint_dataset_summary(
+    mock_connect, sample_endpoint_dataset_summary_params
+):
     """Test search_endpoint_dataset_summary with mocked DuckDB connection."""
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
@@ -234,7 +254,7 @@ def test_search_endpoint_dataset_summary(mock_connect, sample_common_params):
     mock_conn.execute.return_value = mock_cursor
     mock_connect.return_value.__enter__.return_value = mock_conn
 
-    result = search_endpoint_dataset_summary(sample_common_params)
+    result = search_endpoint_dataset_summary(sample_endpoint_dataset_summary_params)
 
     assert isinstance(result, PaginatedResult)
     assert result.total_results_available == 8

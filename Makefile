@@ -1,3 +1,7 @@
+init:
+	python -m pip install --upgrade pip
+	python -m pip install -r requirements/test_requirements.txt
+
 compose-up:
 	docker compose up -d --build
 

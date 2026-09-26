@@ -1,10 +1,13 @@
-FROM python:3.9.19-slim-bookworm
+FROM python:3.13-slim-bookworm
 
 ARG GIT_COMMIT=placeholder
 ENV GIT_COMMIT=$GIT_COMMIT
 
-# RUN apk add --no-cache libcurl curl-dev build-base
-# RUN apk add --no-cache libcurl curl-dev build-base linux-headers libffi-dev
+# update debian packages, worth the trade off of them changing as it will ensure security updates
+RUN apt-get update \
+    && apt-get upgrade -y \
+    # remove the apt cache to reduce image size
+    && rm -rf /var/lib/apt/lists/*
 
 COPY requirements/requirements.txt requirements/requirements.txt
 COPY requirements/test_requirements.txt requirements/test_requirements.txt

@@ -6,3 +6,4 @@ boto3
 black
 flake8
 pytest-cov>=5.0.0
+pip-tools

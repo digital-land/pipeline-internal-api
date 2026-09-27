@@ -1,0 +1,46 @@
+name: Test
+run-name: Test - ${{ github.head_ref || github.ref_name }} by @${{ github.actor }}
+
+on:
+  push:
+    branches-ignore: [main]
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - run: make init
+      - run: make lint
+
+  test:
+    runs-on: ubuntu-22.04
+    env:
+      DATASETTE_URL: https://datasette.digital-land.info
+      DATA_FILE_URL: https://data.digital-land.info
+      READ_DATABASE_URL: postgresql://postgres:postgres@localhost/digital_land_test
+      WRITE_DATABASE_URL: postgresql://postgres:postgres@localhost/digital_land_test
+      ENVIRONMENT: development
+      PGPASSWORD: postgres
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - run: make init
+
+      - name: Run Tests
+        run: |
+          make test
+

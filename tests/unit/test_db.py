@@ -103,7 +103,7 @@ def test_search_issues(mock_connect, sample_issue_params):
 
     mock_cursor = MagicMock()
     mock_cursor.fetchone.return_value = (mock_count,)
-    mock_cursor.arrow.return_value.to_pylist.return_value = mock_results_data
+    mock_cursor.to_arrow_table.return_value.to_pylist.return_value = mock_results_data
     mock_conn.execute.return_value = mock_cursor
 
     result = search_issues(sample_issue_params)
@@ -139,7 +139,7 @@ def test_search_provision_summary(mock_connect, sample_common_params):
 
     # Mock query results
     mock_cursor.fetchone.return_value = [5]  # Simulated COUNT(*) result
-    mock_cursor.arrow.return_value.to_pylist.return_value = [
+    mock_cursor.to_arrow_table.return_value.to_pylist.return_value = [
         {
             "organisation": "org1",
             "dataset": "data1",
@@ -179,7 +179,7 @@ def test_search_issue_type_summary(mock_connect, sample_issue_type_params):
 
     # Mock query results
     mock_cursor.fetchone.return_value = [5]  # Simulated COUNT(*) result
-    mock_cursor.arrow.return_value.to_pylist.return_value = [
+    mock_cursor.to_arrow_table.return_value.to_pylist.return_value = [
         {
             "organisation": "org1",
             "dataset": "data1",
@@ -214,7 +214,7 @@ def test_search_dataset_resource_mapping(
     mock_cursor = MagicMock()
 
     mock_cursor.fetchone.return_value = [3]  # Simulated COUNT(*) result
-    mock_cursor.arrow.return_value.to_pylist.return_value = [
+    mock_cursor.to_arrow_table.return_value.to_pylist.return_value = [
         {"dataset": "data1", "resource": "res1"},
         {"dataset": "data2", "resource": "res2"},
     ]
@@ -246,7 +246,7 @@ def test_search_endpoint_dataset_summary(
     mock_cursor = MagicMock()
 
     mock_cursor.fetchone.return_value = [8]  # Simulated COUNT(*) result
-    mock_cursor.arrow.return_value.to_pylist.return_value = [
+    mock_cursor.to_arrow_table.return_value.to_pylist.return_value = [
         {"dataset": "data1", "endpoint": "endpoint1"},
         {"dataset": "data2", "endpoint": "endpoint2"},
     ]
@@ -272,7 +272,7 @@ def test_get_specification(mock_connect, sample_specification_params, caplog):
     mock_cursor.fetchone.return_value = [3]
 
     # Mock JSON data results
-    mock_cursor.arrow.return_value.to_pylist.return_value = [
+    mock_cursor.to_arrow_table.return_value.to_pylist.return_value = [
         {"json": json.dumps({"dataset": "test_dataset", "spec": "value1"})},
         {"json": json.dumps({"dataset": "test_dataset", "spec": "value2"})},
     ]

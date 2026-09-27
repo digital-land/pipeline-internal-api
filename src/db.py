@@ -213,7 +213,7 @@ def get_specification(params: SpecificationsParams):
                 conn.execute(
                     sql_results, [*query_params.values(), params.limit, params.offset]
                 )
-                .arrow()
+                .to_arrow_table()
                 .to_pylist()
             )
 
@@ -260,7 +260,7 @@ def duck_db_connection(params, query_params, sql_count, sql_results):
             count = conn.execute(sql_count, query_params).fetchone()[0]
             results = (
                 conn.execute(sql_results, query_params + [params.limit, params.offset])
-                .arrow()
+                .to_arrow_table()
                 .to_pylist()
             )
 

@@ -22,6 +22,72 @@ You can run the API locally by running either `make compose-up` or `docker compo
 The docker compose setup runs the S3 locally using Localstack as well as the API.  An S3 bucket called local-collection-data is created and seeded with example files in the collection-data directory.
 
 
+## Tests
+
+With your virtual environment activated (see [Local setup](#local-setup)), install the dependencies:
+
+```
+make init
+```
+
+Then run the linters, unit tests and integration tests:
+
+```
+make test
+```
+
+The integration tests start a LocalStack container, so Docker needs to be running.
+
+
+## Maintenance and upgrading
+
+### Local setup
+
+Create a virtual environment using the Python version in `.python-version` (pyenv will pick this up automatically) and install the dependencies:
+
+```
+python -m venv .venv
+source .venv/bin/activate
+make init
+```
+
+### Python dependencies
+
+Dependencies are managed with [pip-tools](https://github.com/jazzband/pip-tools):
+
+ * `requirements/requirements.in` and `requirements/test_requirements.in` list the direct dependencies, without pinned versions
+ * `requirements/requirements.txt` and `requirements/test_requirements.txt` are generated lock files with every package pinned. Don't edit these by hand
+
+To upgrade all packages to their latest versions, run:
+
+```
+make upgrade
+```
+
+This regenerates both lock files and installs the new versions into your virtual environment. It fails if the active Python doesn't match `.python-version`, because the lock files are resolved for a specific Python version.
+
+To upgrade a single package, run:
+
+```
+pip-compile --upgrade-package duckdb requirements/requirements.in
+pip-compile requirements/test_requirements.in
+```
+
+Run `make test` after upgrading, and review the changes to the lock files before committing.
+
+### Debian packages
+
+The Docker image runs `apt-get upgrade` at build time so that it picks up Debian security updates (for example, OpenSSL). These packages aren't pinned, so rebuild the image regularly to stay patched.
+
+### Upgrading Python
+
+To move to a new Python version, change all of the following together:
+
+ * `.python-version`
+ * the base image in `Dockerfile` (e.g. `python:3.13-slim-bookworm`)
+ * the lock files, by recreating your virtual environment on the new version and running `make upgrade`
+
+
 ## Swagger UI
 
 The Swagger UI bundled with Fast API is a useful way to explore the API and try out the endpoints.  It's exposed on the /docs path, e.g.

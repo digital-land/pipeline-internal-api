@@ -1,4 +1,4 @@
-FROM python:3.13-slim-bookworm
+FROM python:3.13-slim-trixie
 
 ARG GIT_COMMIT=placeholder
 ENV GIT_COMMIT=$GIT_COMMIT
